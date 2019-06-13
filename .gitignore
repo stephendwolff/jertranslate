@@ -1,0 +1,21 @@
+
+
+# ignore Google API secret key
+/Mr Gee-cdeb2e5979ac.json
+
+
+# ignore source for downloaded packages
+/src/google.golang.org/grpc
+/src/google.golang.org/genproto
+/src/google.golang.org/api
+/src/golang.org/x/text
+/src/golang.org/x/oauth2
+/src/golang.org/x/net
+/src/go.opencensus.io
+/src/github.com/hashicorp/golang-lru
+/src/github.com/golang/protobuf
+/src/github.com/go-sql-driver/mysql
+/src/cloud.google.com/go
+
+# ignore interim build packages
+/pkg
