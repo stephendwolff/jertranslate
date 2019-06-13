@@ -2,15 +2,26 @@
 package main
 
 import (
-	"context"
-	"fmt"
+//	"context"
+//	"fmt"
 	"log"
+	"mydb"
 
-	"cloud.google.com/go/translate"
-	"golang.org/x/text/language"
+//	"cloud.google.com/go/translate"
+//	"golang.org/x/text/language"
 )
 
 func main() {
+	mydb.SetDSN("jerusalem:jerusalem@tcp(127.0.0.1:3306)/jerusalem?charset=utf8")
+
+
+	languages, err := mydb.GetLanguages()
+	if err != nil {
+		log.Fatalf("Failed to get languages: %v", err)
+	}
+	log.Print(languages)
+
+	/*
 	ctx := context.Background()
 
 	// Creates a client.
@@ -35,4 +46,7 @@ func main() {
 
 	fmt.Printf("Text: %v\n", text)
 	fmt.Printf("Translation: %v\n", translations[0].Text)
+
+
+	 */
 }
