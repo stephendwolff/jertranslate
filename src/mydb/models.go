@@ -32,6 +32,7 @@ class Language(models.Model):
 */
 
 type Language struct {
+	ID					uint64 `json:"id"`
 	Name             	string `json:"name"`
 	Translate        	bool `json:"translate"`
 	IsoTwoLetterCode   	string `json:"iso_two_letter_code"`
@@ -48,8 +49,9 @@ class PoemLine(models.Model):
 
 
 type PoemLine struct {
+	ID				uint64 `json:"id"`
 	Line			string `json:"line"`
-	LineNumber		uint8 `json:"line_number"`
+	LineNumber		uint64 `json:"line_number"`
 }
 
 /*

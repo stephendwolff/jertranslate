@@ -2,51 +2,57 @@
 package main
 
 import (
-//	"context"
-//	"fmt"
 	"log"
 	"mydb"
-
-//	"cloud.google.com/go/translate"
-//	"golang.org/x/text/language"
 )
 
 func main() {
 	mydb.SetDSN("jerusalem:jerusalem@tcp(127.0.0.1:3306)/jerusalem?charset=utf8")
 
-
+	// get list of languages
 	languages, err := mydb.GetLanguages()
 	if err != nil {
 		log.Fatalf("Failed to get languages: %v", err)
 	}
 	log.Print(languages)
 
-	/*
-	ctx := context.Background()
 
-	// Creates a client.
-	client, err := translate.NewClient(ctx)
+	// get list of poem lines
+	lineObjs, err := mydb.GetPoemLines()
 	if err != nil {
-		log.Fatalf("Failed to create client: %v", err)
+		log.Fatalf("Failed to get lines: %v", err)
 	}
 
-	// Sets the text to translate.
-	text := "Hello, world!"
-	// Sets the target language.
-	target, err := language.Parse("ru")
-	if err != nil {
-		log.Fatalf("Failed to parse target language: %v", err)
+	var poemLines []string
+	for _, lineObj := range lineObjs {
+		poemLines = append(poemLines, lineObj.Line)
 	}
 
-	// Translates the text into Russian.
-	translations, err := client.Translate(ctx, []string{text}, target, nil)
-	if err != nil {
-		log.Fatalf("Failed to translate text: %v", err)
+	// iterate through languages, translating to and from languages for the erosion
+	for i, language := range languages {
+		if language.IsoTwoLetterCode != "en" {
+			log.Print(i, language.IsoTwoLetterCode)
+
+			// get translation into language
+			translations, err := mydb.GetGoogleTranslations(&poemLines, "en", language.IsoTwoLetterCode)
+			if err != nil {
+				log.Fatalf("Failed to translate: %v", err)
+			}
+			log.Print(i, translations)
+
+			// get translation back into English
+			erosions, err :=  mydb.GetGoogleTranslations(&translations, language.IsoTwoLetterCode, "en")
+			if err != nil {
+				log.Fatalf("Failed to translate back: %v", err)
+			}
+			log.Print(i, erosions)
+
+			// store
+			err = mydb.StoreTranslationsAndErosions(&translations, &erosions, "en", language.IsoTwoLetterCode, &languages, &lineObjs)
+			if err != nil {
+				log.Fatalf("Failed to store translations: %v", err)
+			}
+		}
 	}
-
-	fmt.Printf("Text: %v\n", text)
-	fmt.Printf("Translation: %v\n", translations[0].Text)
-
-
-	 */
 }
+
