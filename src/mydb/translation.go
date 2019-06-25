@@ -56,7 +56,8 @@ func StoreTranslationsAndErosions(translations *[]string,
 								  erosionLanguageCode string,
 								  targetLanguageCode string,
 								  languages *[]Language,
-								  poemLines *[]PoemLine) error {
+								  poemLines *[]PoemLine,
+								  originals *[]string) error {
 
 
 
@@ -75,17 +76,19 @@ func StoreTranslationsAndErosions(translations *[]string,
 
 	query := "INSERT INTO trans_translation (`original`, `translation`, `erosion`, `original_language_id`, `translation_language_id`, `order`, `use`, `poem_line_id`, `collected_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
-	for i, poemLine := range *poemLines {
+	for i, _ := range *poemLines {
 
 		// big assumption here, translations are in poem line order, so poemLine.ID is what we use for the insert
 		poemLineID = uint64(i + 1)
-		lastId, rowCount, err := Exec(query,
-			poemLine.Line, (*translations)[i], (*erosions)[i], erosionLanguageID, targetLanguageID, 0, true, poemLineID,
+		_, _, err := Exec(query,
+			(*originals)[i], (*translations)[i], (*erosions)[i], erosionLanguageID, targetLanguageID, 0, true, poemLineID,
 			time.Now().UTC().Format("2006-01-02 15:04:05.000"))
+//		(*originals)[i], (*translations)[i], (*erosions)[i], erosionLanguageID, targetLanguageID, 0, true, poemLineID,
+//			time.Now().UTC().Format("2006-01-02 15:04:05.000"))
 		if err != nil {
+			log.Print(err)
 			return err
 		}
-		log.Print(lastId, rowCount, err)
 	}
 	return nil
 

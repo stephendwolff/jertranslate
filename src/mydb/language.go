@@ -7,7 +7,8 @@ import (
 
 func GetLanguages() ([]Language, error) {
 
-	rows, err := Select("SELECT * FROM `trans_language`")
+	rows, err := Select("SELECT * FROM `trans_language` WHERE use_for_installation=1 ORDER BY `name`")
+//	rows, err := Select("SELECT * FROM `trans_language` ORDER BY `name`")
 
 	if err != nil {
 		return nil, err
